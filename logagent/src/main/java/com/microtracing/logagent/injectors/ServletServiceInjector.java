@@ -32,6 +32,8 @@ public class ServletServiceInjector implements CallInjector {
         + "  }\n";
                             
 	public ServletServiceInjector(LogTraceConfig config) {
+		config.addProfileClass("weblogic.servlet.internal.StubSecurityHelper");//for weblogic
+		config.addProfileClass("org.apache.tomcat.websocket.server.WsFilter");//for tomcat
 		this.config = config;
 	}
 	
