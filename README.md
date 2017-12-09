@@ -179,3 +179,11 @@ tracespan/src/main/resources/log4j2.xml
 
 ### java.lang.ClassNotFoundException
 CLASSPATH中存在重复jar文件或依赖jar文件分散在不同目录，由不同ClassLoader加载且顺序错误导致，清理JRE/lib,server/lib,webapp/WEB-INF/lib等目录下手工放置的jar文件，并参考tomcat部署方法进行重新部署。
+
+## 技术参考
+1. [Dapper，大规模分布式系统的跟踪系统](http://bigbully.github.io/Dapper-translation/)
+2. [构建Java Agent，而不是使用框架](http://www.importnew.com/15768.html)
+3. [硅谷独角兽公司的监控系统长啥样？](http://www.sohu.com/a/199998199_262549)
+4. [Spring Cloud Sleuth](https://github.com/spring-cloud/spring-cloud-sleuth)
+5. [Getting Started with Javassist](http://jboss-javassist.github.io/javassist/tutorial/tutorial.html)
+6. [Asynchronous Loggers for Low-Latency Logging](https://logging.apache.org/log4j/2.x/manual/async.html#Performance)
