@@ -134,8 +134,8 @@ tracespan/src/main/resources/log4j2.xml
   - logtrace.enableServletTrace 启用Servlet执行跟踪
   - logtrace.enableJdbcTrace 启用JDBC执行跟踪
   - logtrace.enableExceptionLog 启用异常跟踪
-  - logtrace.enableTimingLog 启用耗时记录（方法执行时间超过指定阈值则记录相关信息）
-  - logtrace.timingThreshold 启用耗时记录的阈值
+  - logtrace.enableTimingLog 启用耗时记录（方法执行时间超过指定阈值则记录相关信息）
+  - logtrace.timingThreshold 启用耗时记录的阈值
   
 - 参考配置
   - 默认配置: logagent/src/main/resources/logtrace.properties
