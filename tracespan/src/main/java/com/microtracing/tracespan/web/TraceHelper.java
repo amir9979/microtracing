@@ -4,6 +4,8 @@ import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -11,6 +13,10 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.microtracing.tracespan.web.HttpServletInterceptor;
+import com.microtracing.tracespan.web.LogPrintStream;
+import com.microtracing.tracespan.web.TraceHelper;
+import com.microtracing.tracespan.web.TraceHttpServletResponse;
 import com.microtracing.tracespan.Span;
 import com.microtracing.tracespan.Tracer;
 
@@ -29,26 +35,29 @@ public class TraceHelper {
 	private static AtomicInteger tryCount = new AtomicInteger(0);
 	
 	
-	public static boolean ignoreTrace(HttpServletRequest request){
+	public static boolean ignoreTrace(ServletRequest req){
+		if (!(req instanceof HttpServletRequest)) return true;
+		
+		HttpServletRequest request =  (HttpServletRequest)req;
 		return ("GET".equals(request.getMethod()) 
 				&& IGNORE_URIS_PATTERN.matcher( request.getRequestURI() ).find());
 	}
 	
-	public static boolean isTraced(HttpServletRequest request){
+	public static boolean isTraced(ServletRequest request){
 		return request.getAttribute(TRACER_REQUEST_ATTR)!=null;
 	}
 	
-	public static HttpServletRequest wrapRequest(HttpServletRequest request){
+	public static ServletRequest wrapRequest(ServletRequest request){
 		return request;
 	}
 	
-	public static HttpServletResponse wrapResponse(HttpServletRequest request, HttpServletResponse response){
+	public static ServletResponse wrapResponse(ServletRequest request, ServletResponse response){
 		Tracer tracer = (Tracer)request.getAttribute(TRACER_REQUEST_ATTR);
 		if (tracer == null) return response;
 		
 		Span clientSpan = tracer.getClientSpan();
 		if (clientSpan != null){
-			response = new TraceHttpServletResponse(response, clientSpan);
+			response = new TraceHttpServletResponse((HttpServletResponse)response, clientSpan);
 		};
 		return response;
 	}
@@ -59,12 +68,15 @@ public class TraceHelper {
 	 * @param response
 	 * @return if new request trace started
 	 */
-	public static Span beforeService(HttpServletRequest request, HttpServletResponse response){
+	public static Span beforeService(ServletRequest req, ServletResponse resp){
 		try{
-			if (ignoreTrace(request)){
+			if (ignoreTrace(req)){
 				return null;
 			}
 	
+			HttpServletRequest request =  (HttpServletRequest)req;
+			//HttpServletResponse response =  (HttpServletResponse)resp;
+			
 			if (isTraced(request)){
 				logRequestInfo(request, false);
 				return null;
@@ -93,15 +105,18 @@ public class TraceHelper {
 	 * @param response
 	 * @param finish if stop trace span 
 	 */
-	public  static void afterService(HttpServletRequest request, HttpServletResponse response, Span span){
-		if (ignoreTrace(request)){
+	public  static void afterService(ServletRequest req, ServletResponse resp, Span span){
+		if (ignoreTrace(req)){
 			return ;
 		}
+		
+		HttpServletRequest request =  (HttpServletRequest)req;
+		HttpServletResponse response =  (HttpServletResponse)resp;
 		
 		logResponseInfo(request, response, span!=null);
 		
 		if (span!=null){
-			Tracer tracer = (Tracer)request.getAttribute(TRACER_REQUEST_ATTR);
+			//Tracer tracer = (Tracer)request.getAttribute(TRACER_REQUEST_ATTR);
 			request.removeAttribute(TRACER_REQUEST_ATTR);
 			span.stop();
 		}

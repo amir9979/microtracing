@@ -247,8 +247,8 @@ public class Span{
 			for (SpanEvent e : events) {
 				if (e.getEvent().equals(event)) {
 					//if (msg!=null) e.setMsg(e.getMsg() + " " + msg);
-					log(e + " was already annotated, will not do it again");
-					return ;
+					logger.trace(e + " was already annotated, will not do it again");
+					return ;// just ignore
 				}
 			}
 		}
