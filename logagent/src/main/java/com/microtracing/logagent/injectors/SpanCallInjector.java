@@ -3,7 +3,7 @@ import com.microtracing.logagent.CallInjector;
 import com.microtracing.logagent.LogTraceConfig;
 public class SpanCallInjector implements CallInjector{
 
-	protected final static String DEFAULT_SPAN_NAME = "CALL:%1$s.%2$s(\"+$0.toString()+\")";
+	protected final static String DEFAULT_SPAN_NAME = "CALL:%1$s.%2$s<\"+$0+\">)";
 
 	protected  String initAndStartSpan 
         = "  _$tracer = com.microtracing.tracespan.Tracer.getTracer(); \n"
